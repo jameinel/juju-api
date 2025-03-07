@@ -785,7 +785,7 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/MachineCreateArgs"
-          required: true
+        required: true
       responses:
         "201":
           $ref: "#/components/responses/EntityCreated"
@@ -1853,9 +1853,6 @@ components:
           description: Identifier of the cloud region in which to create the model.
           type: string
       additionalProperties: false
-      required:
-        - name
-        - owner
     MachineHardware:
       type: object
       properties:
