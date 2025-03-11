@@ -176,14 +176,14 @@ This table tracks progress through the redesign of the Juju client API:
 | KeyManager           | ListKeys                        |                                                                 |
 | MachineManager       | AddMachines                     | `POST /models/{namespace}/{model}/machines`                     |
 | MachineManager       | DestroyMachineWithParams        | `DELETE /models/{namespace}/{model}/machines/{machine-id}`      |
-| MachineManager       | GetUpgradeSeriesMessages        |                                                                 |
+| MachineManager       | GetUpgradeSeriesMessages        | N/A                                                             |
 | MachineManager       | InstanceTypes                   |                                                                 |
 | MachineManager       | ProvisioningScript              |                                                                 |
 | MachineManager       | RetryProvisioning               |                                                                 |
-| MachineManager       | UpgradeSeriesComplete           |                                                                 |
-| MachineManager       | UpgradeSeriesPrepare            |                                                                 |
-| MachineManager       | UpgradeSeriesValidate           |                                                                 |
-| MachineManager       | WatchUpgradeSeriesNotifications |                                                                 |
+| MachineManager       | UpgradeSeriesComplete           | N/A                                                             |
+| MachineManager       | UpgradeSeriesPrepare            | N/A                                                             |
+| MachineManager       | UpgradeSeriesValidate           | N/A                                                             |
+| MachineManager       | WatchUpgradeSeriesNotifications | N/A                                                             |
 | MetricsDebug         | GetMetrics                      |                                                                 |
 | MetricsDebug         | SetMeterStatus                  |                                                                 |
 | ModelConfig          | GetModelConstraints             | `GET /models/{namespace}/{model}`                               |
@@ -194,14 +194,14 @@ This table tracks progress through the redesign of the Juju client API:
 | ModelConfig          | Sequences                       |                                                                 |
 | ModelConfig          | SetModelConstraints             | `PATCH /models/{namespace}/{model}`                             |
 | ModelConfig          | SetSLALevel                     | N/A                                                             |
-| ModelGeneration      | AbortBranch                     |                                                                 |
-| ModelGeneration      | AddBranch                       |                                                                 |
-| ModelGeneration      | BranchInfo                      |                                                                 |
-| ModelGeneration      | CommitBranch                    |                                                                 |
-| ModelGeneration      | HasActiveBranch                 |                                                                 |
-| ModelGeneration      | ListCommits                     |                                                                 |
-| ModelGeneration      | ShowCommit                      |                                                                 |
-| ModelGeneration      | TrackBranch                     |                                                                 |
+| ModelGeneration      | AbortBranch                     | N/A                                                             |
+| ModelGeneration      | AddBranch                       | N/A                                                             |
+| ModelGeneration      | BranchInfo                      | N/A                                                             |
+| ModelGeneration      | CommitBranch                    | N/A                                                             |
+| ModelGeneration      | HasActiveBranch                 | N/A                                                             |
+| ModelGeneration      | ListCommits                     | N/A                                                             |
+| ModelGeneration      | ShowCommit                      | N/A                                                             |
+| ModelGeneration      | TrackBranch                     | N/A                                                             |
 | ModelManager         | ChangeModelCredential           | `PATCH /models/{namespace}/{model}`                             |
 | ModelManager         | CreateModel                     | `POST /models`                                                  |
 | ModelManager         | DestroyModels                   | `DELETE /models/{namespace}/{model}`                            |
