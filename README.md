@@ -81,6 +81,7 @@ This table tracks progress through the redesign of the Juju client API:
 | Application          | DestroyUnit                     | `PATCH /models/{namespace}/{model}/apps/{app}/scale`            |
 | Application          | Expose                          | `PATCH /models/{namespace}/{model}/apps/{app}`                  |
 | Application          | Get                             | `GET /models/{namespace}/{model}/apps/{app}`                    |
+| Application          | GetCharmURLOrigin               |                                                                 |
 | Application          | GetConfig                       | `GET /models/{namespace}/{model}/apps/{app}`                    |
 | Application          | GetConstraints                  | `GET /models/{namespace}/{model}/apps/{app}`                    |
 | Application          | Leader                          |                                                                 |
@@ -112,6 +113,7 @@ This table tracks progress through the redesign of the Juju client API:
 | Bundle               | GetChanges                      |                                                                 |
 | Bundle               | GetChangesMapArgs               |                                                                 |
 | Charms               | AddCharm                        |                                                                 |
+| Charms               | CharmInfo                       |                                                                 |
 | Charms               | CheckCharmPlacement             |                                                                 |
 | Charms               | GetDownloadInfos                |                                                                 |
 | Charms               | IsMetered                       |                                                                 |
