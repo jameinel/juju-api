@@ -91,7 +91,7 @@ This table tracks progress through the redesign of the Juju client API:
 | Application          | SetCharm                        | `PATCH /models/{namespace}/{model}/apps/{app}/refresh`          |
 | Application          | SetConfigs                      | `PATCH /models/{namespace}/{model}/apps/{app}`                  |
 | Application          | SetConstraints                  | `PATCH /models/{namespace}/{model}/apps/{app}`                  |
-| Application          | SetMetricCredentials            |                                                                 |
+| Application          | SetMetricCredentials            | N/A                                                             |
 | Application          | SetRelationsSuspended           |                                                                 |
 | Application          | Unexpose                        | `PATCH /models/{namespace}/{model}/apps/{app}`                  |
 | Application          | UnitsInfo                       |                                                                 |
@@ -184,8 +184,8 @@ This table tracks progress through the redesign of the Juju client API:
 | MachineManager       | UpgradeSeriesPrepare            | N/A                                                             |
 | MachineManager       | UpgradeSeriesValidate           | N/A                                                             |
 | MachineManager       | WatchUpgradeSeriesNotifications | N/A                                                             |
-| MetricsDebug         | GetMetrics                      |                                                                 |
-| MetricsDebug         | SetMeterStatus                  |                                                                 |
+| MetricsDebug         | GetMetrics                      | N/A                                                             |
+| MetricsDebug         | SetMeterStatus                  | N/A                                                             |
 | ModelConfig          | GetModelConstraints             | `GET /models/{namespace}/{model}`                               |
 | ModelConfig          | ModelGet                        | `GET /models/{namespace}/{model}`                               |
 | ModelConfig          | ModelSet                        | `PATCH /models/{namespace}/{model}`                             |
