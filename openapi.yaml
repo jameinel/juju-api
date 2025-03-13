@@ -641,30 +641,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/InternalServerError"
-  /models/{namespace}/{model}/charms/{charm-name}:
-    # TODO: jam 2025-03-04 this needs a revision of some sort, to disambiguate revisions of the charm over time
-    get:
-      tags:
-        - charms
-      summary: Upload a charm blob to the juju controller so that you can later deploy the charm
-      description: |
-        Download the content of an uploaded charm
-      operationId: downloadCharm
-      parameters:
-        - $ref: "#/components/parameters/Namespace"
-        - $ref: "#/components/parameters/Model"
-        - $ref: "#/components/parameters/CharmName"
-      responses:
-        "201":
-          $ref: "#/components/responses/EntityCreated"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "403":
-          $ref: "#/components/responses/Forbidden"
-        "500":
-          $ref: "#/components/responses/InternalServerError"
-  /models/{namespace}/{model}/charms/{charm-name}/resources:
-    # TODO: jam 2025-03-04 this needs a revision of some sort, to disambiguate revisions of the resources over time
+  /models/{namespace}/{model}/charms/{charm-name}/{charm-rev}/resources:
     post:
       tags:
         - charms
@@ -675,13 +652,23 @@ paths:
         To deploy a local charm, first upload charms and resources, getting
         references to them, which can then be supplied when creating an
         application.
-      operationId: charmResources
+      operationId: uploadCharmResources
       parameters:
         - $ref: "#/components/parameters/Namespace"
         - $ref: "#/components/parameters/Model"
         - $ref: "#/components/parameters/CharmName"
+        - $ref: "#/components/parameters/CharmRevision"
       requestBody:
         content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                # TODO: jam 2025-03-13 these are rough approximations of what we need to supply
+                resource:
+                  type: string
+                sha256:
+                  type: string
           application/zip:
             schema:
               type: string
@@ -721,7 +708,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/InternalServerError"
-  /models/{namespace}/{model}/integrations/{integration}:
+  /models/{namespace}/{model}/integrations/{integration-id}:
     # TODO: jam 2025-02-20 There should almost definitely be a GET possible for
     # an integration, plausibly to get you the current content of that relation
     delete:
@@ -733,7 +720,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/Namespace"
         - $ref: "#/components/parameters/Model"
-        - $ref: "#/components/parameters/Integration"
+        - $ref: "#/components/parameters/IntegrationID"
       responses:
         "200":
           $ref: "#/components/responses/EmptySyncResponse"
@@ -2711,6 +2698,13 @@ components:
       description: The name of the Charm.
       schema:
         type: string
+    CharmRevision:
+      in: path
+      name: charm-rev
+      required: true
+      description: The revision of the Charm.
+      schema:
+        type: string
     Cloud:
       in: path
       name: cloud
@@ -2746,9 +2740,9 @@ components:
       schema:
         type: boolean
         default: false
-    Integration:
+    IntegrationID:
       in: path
-      name: integration
+      name: integration-id
       required: true
       schema:
         # TODO: jam 2025-02-20 should this be an opaque string instead?
@@ -2895,6 +2889,7 @@ components:
       in: query
       name: wait
       required: false
+      description: Wait for hooks to complete before moving forward with removing the entity.
       schema:
         type: boolean
         default: true
