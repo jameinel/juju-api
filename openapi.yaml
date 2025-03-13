@@ -592,6 +592,64 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/InternalServerError"
+  /models/{namespace}/{model}/apps/{app}/units/{unit}:
+    get:
+      tags:
+        - application
+      summary: Get information about a specific unit of an application
+      description: |
+        Get detailed information about a specific unit of an application that's
+        deployed within the model.
+      operationId: getUnit
+      parameters:
+        - $ref: "#/components/parameters/Namespace"
+        - $ref: "#/components/parameters/Model"
+        - $ref: "#/components/parameters/Application"
+        - $ref: "#/components/parameters/Unit"
+      responses:
+        "200":
+          description: Detailed information about the requested unit.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ModelUnitInfo"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+  /models/{namespace}/{model}/apps/{app}/units/{unit}:run:
+    post:
+      tags:
+        - application
+        - actions
+      summary: Run a specific action for this unit.
+      description: |
+        Trigger an action to be run on this unit. The list of possible
+        applications and their parameters can be looked up on
+        /models/{namespace}/{model}/apps/{app}/actions.
+      operationId: runUnitAction
+      parameters:
+        - $ref: "#/components/parameters/Namespace"
+        - $ref: "#/components/parameters/Model"
+        - $ref: "#/components/parameters/Application"
+        - $ref: "#/components/parameters/Unit"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RunAction"
+        required: true
+      responses:
+        "201":
+          $ref: "#/components/responses/EntityCreated"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
   # TODO: Should this just be at PATCH /models/{model}/apps/{app}?
   /models/{namespace}/{model}/apps/{app}:refresh:
     patch:
@@ -2092,6 +2150,10 @@ components:
       properties:
         name:
           type: string
+        units:
+          type: array
+          items:
+            $ref: "#/components/schemas/ModelUnitInfo"
       additionalProperties: false
       required:
         - name
@@ -2321,6 +2383,14 @@ components:
       additionalProperties: false
       required:
         - id
+    ModelUnitInfo:
+      type: object
+      properties:
+        name:
+          type: string
+      additionalProperties: false
+      required:
+        - name
     ModelUpdate:
       type: object
       properties:
@@ -2445,6 +2515,30 @@ components:
         descriptor:
           description: Path or image url set when resource is created.
           type: string
+    RunAction:
+      type: object
+      properties:
+        commands:
+          type: string
+          timeout:
+            type: string
+            format: iso8601
+            examples:
+              - P1M
+              - P1D2H3M0S
+          parallel:
+            type: boolean
+          execution-group:
+            type: string
+          workload-context:
+            type: boolean
+          # TODO: (jam) 2025-03-13 These are all inferred by how you trigger the action to *be* run
+          # machines
+          # applications
+          # units
+      additionalProperties: false
+      required:
+        - commands
     Secret:
       type: object
       properties:
@@ -3023,7 +3117,19 @@ components:
       name: timeout
       required: false
       schema:
+        # TODO: (jam) 2025-03-13 Should timeouts be given as simple integer
+        #   seconds, there is an ISO8601 duration format
         type: integer
+    Unit:
+      # TODO: (jam) 2025-03-13 Given that we access a unit as
+      #   /models/.../apps/{app}/units/{unit}, should this be just the number,
+      #   or should it be the existing `unit-0`.
+      in: path
+      name: unit
+      required: true
+      description: Unit identifier for a single unit of an application.
+      schema:
+        type: string
     User:
       in: path
       name: user
