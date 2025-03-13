@@ -34,6 +34,14 @@ externalDocs:
 servers:
   - url: https://localhost:17777/api/v1
 tags:
+  - name: actions
+    description: Manage Juju actions
+    externalDocs:
+      description: Trigger premade scripts defined by charms
+      # TODO: (jam) We should probably look at what we want to do for stable
+      # URLs, they should probably present under juju.is/docs and not redirect
+      # to canonical-juju.readthedocs-hosted.com
+      url: https://canonical-juju.readthedocs-hosted.com/en/3.6/user/howto/manage-action
   - name: application
     description: Manage Juju applications
     externalDocs:
@@ -388,6 +396,31 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/InternalServerError"
+  /models/{namespace}/{model}/actions/{action-id}:
+    get:
+      tags:
+        - actions
+      summary: Get the details of a given action that was run
+      description: |
+        Once an action has been triggered, read the results of that action.
+      operationId: getAction
+      parameters:
+        - $ref: "#/components/parameters/Namespace"
+        - $ref: "#/components/parameters/Model"
+        - $ref: "#/components/parameters/Action"
+      responses:
+        "200":
+          description: Detailed information about the requested action.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ActionResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
   /models/{namespace}/{model}/apps:
     post:
       tags:
@@ -494,6 +527,33 @@ paths:
       responses:
         "200":
           $ref: "#/components/responses/EmptySyncResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+  /models/{namespace}/{model}/apps/{app}/actions:
+    get:
+      tags:
+        - application
+        - actions
+      summary: Get the list of actions that can be run on this application.
+      description: |
+        Get the definition of the actions that this application has defined,
+        along with their descriptions and the parameters that can be supplied.
+      operationId: getApplicationActions
+      parameters:
+        - $ref: "#/components/parameters/Namespace"
+        - $ref: "#/components/parameters/Model"
+        - $ref: "#/components/parameters/Application"
+      responses:
+        "200":
+          description: Detailed information about actions that can be run for this application.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApplicationActionList"
         "400":
           $ref: "#/components/responses/BadRequest"
         "403":
@@ -1280,6 +1340,75 @@ paths:
           $ref: "#/components/responses/InternalServerError"
 components:
   schemas:
+    ActionParameters:
+      # TODO: (jam) 2025-03-13 Do we have the actual parameters as property
+      #   attributes of ActionParameters, or do we make this an array of
+      #   key/value types?
+      #   In Juju 3.6 ActionSpec returns a Params struct that says:
+      #     The Params map is expected to conform to JSON-Schema Draft 4 as defined at
+      #     http://json-schema.org/draft-04/schema# (see http://json-schema.org/latest/json-schema-core.html)
+      type: object
+      description: The list of parameters for an action and their associated JSON Schema
+      additionalProperties: true
+    ActionResponse:
+      # TODO: (jam) 2025-03-13 When we discuss actions in docs, etc, we talk
+      #   about actions. Internally running an action creates an Operation, which
+      #   then might have multiple Actions that run off of it. (eg `juju run
+      #   app/0 foo` creatse an operation, where each thing that runs on each
+      #   unit is an action.) However, only `juju exec` creates Operations that
+      #   actually span units. Do we want to expose Operations?
+      type: object
+      description: Information about a given action.
+      properties:
+        tag: # TODO: (jam) 2025-03-13 Figure out what we want instead of tag, plausibly ID?
+          type: string
+        receiver:
+          type: string
+        name:
+          type: string
+        parameters:
+          $ref: "#/components/schemas/ActionParameters"
+        parallel:
+          type: boolean
+        execution-group:
+          type: string
+        enqueued:
+          type: string
+          format: date-time
+        started:
+          type: string
+          format: date-time
+        completed:
+          type: string
+          format: date-time
+        message:
+          type: string
+          # TODO: (jam) 2025-03-13 Given that logs and output strings can be
+          #  large, they should probably not be inlined into the primary response
+          #  for information about an action.
+          # Log []ActionMessage
+          # TODO: (jam) 2025-03-13 This is the structured results from performing the action, which
+          #  probably should be part of the primary response, but it also includes
+          #  stdout and stderr as default attributes of running the action, which
+          #  seems like it would be too big to put in by default.
+          #  Internally, it is called "Results", on the wire it is called "Output"
+          # Output map[string]interface{}
+      additionalProperties: false
+      required:
+        - name
+        - receiver
+        - parameters
+    ActionSpec:
+      type: object
+      description: |
+        Information about how to run a given action, including its
+        description and parameters.
+      properties:
+        description:
+          type: string
+        params:
+          type: object
+          $ref: "#/components/schemas/ActionParameters"
     Application:
       type: object
       description: Information about a given application.
@@ -1318,6 +1447,17 @@ components:
         - charm
         - principal
         - exposed
+    ApplicationActionList:
+      type: object
+      properties:
+        actions:
+          description: List of actions for this application.
+          type: array
+          items:
+            $ref: "#/components/schemas/ActionSpec"
+      additionalProperties: false
+      required:
+        - models
     ApplicationRefresh:
       type: object
       properties:
@@ -2670,6 +2810,13 @@ components:
         - patch
         - build
   parameters:
+    Action:
+      in: path
+      name: action-id
+      required: true
+      description: The ID of an action that was triggered.
+      schema:
+        type: string
     All:
       in: query
       name: all

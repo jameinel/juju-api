@@ -50,8 +50,8 @@ This table tracks progress through the redesign of the Juju client API:
 
 | Facade               | Facade Call                     | API Path                                                        |
 | :------------------- | :------------------------------ | :-------------------------------------------------------------- |
-| Action               | Actions                         |                                                                 |
-| Action               | ApplicationsCharmsActions       |                                                                 |
+| Action               | Actions                         | `GET /models/{namespace}/{model}/actions/{action-id}`           |
+| Action               | ApplicationsCharmsActions       | `GET /models/{namespace}/{model}/apps/{app}/actions`            |
 | Action               | Cancel                          |                                                                 |
 | Action               | EnqueueOperation                |                                                                 |
 | Action               | ListOperations                  |                                                                 |
