@@ -1327,9 +1327,6 @@ components:
           additionalProperties:
             $ref: "#/components/schemas/StorageConstraints"
       additionalProperties: false
-      required:
-        - application
-        - charm-name
     ApplicationScale:
       type: object
       properties:
@@ -1866,7 +1863,6 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/ModelMachine"
-      additionalProperties: false
     Model:
       description: Information about a given model.
       type: object
@@ -2391,7 +2387,7 @@ components:
             $ref: "#/components/schemas/Secret"
       additionalProperties: false
       required:
-        - spaces
+        - secrets
     SecretRevision:
       type: object
       properties:
